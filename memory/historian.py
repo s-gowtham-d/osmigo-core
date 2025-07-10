@@ -10,11 +10,12 @@ METRICS_LOG = os.path.join(LOG_DIR, "system_metrics.jsonl")
 
 os.makedirs(LOG_DIR, exist_ok=True)
 
-def log_interaction(prompt, steps):
+def log_interaction(prompt, steps, approved_steps):
     entry = {
         "timestamp": datetime.utcnow().isoformat(),
         "prompt": prompt,
-        "steps": steps
+        "steps": steps,
+        "executed": approved_steps
     }
     with open(INTERACTIONS_LOG, "a") as f:
         f.write(json.dumps(entry) + "\n")
