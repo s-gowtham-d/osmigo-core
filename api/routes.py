@@ -4,6 +4,8 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from orchestrator.planner import plan
 from executor.executor import dry_run, execute
+import os
+import json
 
 ask_router = APIRouter()
 
@@ -43,3 +45,17 @@ async def confirm_and_execute(request: ExecuteRequest):
             raise HTTPException(status_code=500, detail=f"Failed to execute: {cmd} | {str(e)}")
 
     return {"message": "Executed", "commands": executed}
+
+
+@ask_router.get("/system/status")
+def get_latest_metrics():
+    path = "logs/system_metrics.jsonl"
+    if not os.path.exists(path):
+        return {"error": "No data logged yet"}
+
+    with open(path, "r") as f:
+        lines = f.readlines()
+        if not lines:
+            return {"error": "Empty log"}
+
+    return json.loads(lines[-1])

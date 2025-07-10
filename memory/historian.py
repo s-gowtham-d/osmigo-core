@@ -1,16 +1,25 @@
+# memory/historian.py
+
+import os
 import json
 from datetime import datetime
-from pathlib import Path
 
-LOG_FILE = Path("memory/history.jsonl")
+LOG_DIR = "logs"
+INTERACTIONS_LOG = os.path.join(LOG_DIR, "interactions.jsonl")
+METRICS_LOG = os.path.join(LOG_DIR, "system_metrics.jsonl")
 
-def log_interaction(prompt: str, steps: list[str], approved: list[str]):
-    LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with open(LOG_FILE, "a", encoding="utf-8") as f:
-        json.dump({
-            "timestamp": datetime.now().isoformat(),
-            "prompt": prompt,
-            "steps": steps,
-            "approved": approved
-        }, f)
-        f.write("\n")
+os.makedirs(LOG_DIR, exist_ok=True)
+
+def log_interaction(prompt, steps):
+    entry = {
+        "timestamp": datetime.utcnow().isoformat(),
+        "prompt": prompt,
+        "steps": steps
+    }
+    with open(INTERACTIONS_LOG, "a") as f:
+        f.write(json.dumps(entry) + "\n")
+
+def log_system_metrics(data):
+    data["timestamp"] = datetime.utcnow().isoformat()
+    with open(METRICS_LOG, "a") as f:
+        f.write(json.dumps(data) + "\n")
