@@ -54,7 +54,8 @@ Make sure you have the following installed on your system:
 
     Run the FastAPI application using Uvicorn. The `--reload` flag will automatically restart the server when you make changes to the code.
     ```bash
-    uvicorn api.server:app --reload --port 8000
+    uvicorn api.routes:ask_router --reload --port 8000
+    
     ```
     The API will be available at `http://localhost:8000`.
 
